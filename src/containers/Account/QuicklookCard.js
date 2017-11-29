@@ -124,13 +124,12 @@ export class QuicklookCard extends Component<Props, State> {
   render() {
     const { account, accountId } = this.props;
     const { tabsIndex, labelDateRange, quicklookFilter } = this.state;
-    let currencyUnit = getAccountCurrencyUnit(account);
+    let currencyUnit =
+      quicklookFilter.key === "countervalue"
+        ? getFiatUnit(account.settings.fiat)
+        : getAccountCurrencyUnit(account);
     const selectedBalance =
       quicklookFilter.key === "balance" ? "balance" : "counterValueBalance";
-    // FIXME PROBABLY NEEDS TO BE FIXED
-    if (quicklookFilter.key === "countervalue") {
-      currencyUnit = getFiatUnit(account.settings.fiat);
-    }
     return (
       selectedBalance.length && (
         <Card
