@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ArrowDown from "../icons/ArrowDown";
 import "../TotalBalanceFilter/TotalBalanceFilter.css";
-import PopBubble from "../utils/PopBubble.js";
+import Bubble from "../Bubble/Bubble";
 import "./index.css";
 
 const contextTypes = {
@@ -91,20 +91,13 @@ export class Select<T> extends Component<
             {selectedOption ? selectedOption.props.children : null}
           </span>
         </div>
-        <PopBubble
-          open={isOpen}
+        <Bubble
+          isOpen={isOpen}
           anchorEl={this.filter}
           onRequestClose={this.close}
-          style={{
-            boxShadow:
-              "0 0 5px 0 rgba(0, 0, 0, 0.04), 0 10px 10px 0 rgba(0, 0, 0, 0.04)",
-            padding: "20px",
-            fontSize: "11px",
-            textAlign: "right"
-          }}
         >
           {children}
-        </PopBubble>
+        </Bubble>
       </div>
     );
   }
