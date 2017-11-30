@@ -1,48 +1,7 @@
 //@flow
-import React, { Component } from "react";
-import "./Bubble.css";
+import { Component } from "react";
 import ReactDOM from "react-dom";
-
-
-const RenderInBody = React.createClass({
-
-  componentDidMount() {
-    this.popup = document.createElement("div");
-    document.body.appendChild(this.popup);
-    this._renderLayer();
-  },
-
-
-  componentDidUpdate() {
-    this._renderLayer();
-  },
-
-
-  componentWillUnmount() {
-    React.unmountComponentAtNode(this.popup);
-    document.body.removeChild(this.popup);
-  },
-
-
-  _renderLayer() {
-    React.render(this.props.children, this.popup);
-  }
-
-  render() {
-    // Render a placeholder
-    return React.DOM.div(this.props);
-  }
-
-});
-
-
-
-
-
-
-
-
-
+import "./Bubble.css";
 
 type Props = {
   isOpen: boolean,
@@ -53,37 +12,47 @@ type Props = {
 
 // TODO we need to have a max-height and scroll because on big select, it will go off screen (see Settings screen)
 export default class Bubble extends Component<Props, {}> {
-  display = () => {
-    const { isOpen, children } = this.props;
-    const bubble = (
-      <div className="bubbleWrap">
-        <div
-          className={`bubble ${isOpen ? "show" : "hide"}`}
-          style={{
-            boxShadow:
-              "0 0 5px 0 rgba(0, 0, 0, 0.04), 0 10px 10px 0 rgba(0, 0, 0, 0.04)",
-            padding: "20px",
-            fontSize: "11px",
-            textAlign: "right"
-          }}
-        >
-          {children}
-        </div>
-      </div>
-    );
+  bubbleWrap: Element = document.createElement("div");
+  bubble: Element = document.createElement("div");
+  Voffset = 20;
 
-    if (document.body) {
-      document.body.appendChild(React.createElement(bubble));
-    }
-  };
-  hide = () => {};
+  componentDidMount() {
+    const { onRequestClose } = this.props;
+    this.bubbleWrap.className = "bubbleWrap";
+    this.bubbleWrap.onclick = onRequestClose;
+    this.bubble.className = "bubble";
+    this.bubbleWrap.appendChild(this.bubble);
+  }
+
+  componentWillUnmount() {
+    this.hide();
+  }
+
   componentDidUpdate() {
-    const { isOpen } = this.props;
+    const { isOpen, anchorEl } = this.props;
+    console.log(this.props);
+    if (anchorEl) {
+      console.log(anchorEl.getBoundingClientRect());
+      const { top, left, height } = anchorEl.getBoundingClientRect();
+      this.bubble.style.top = top + height + this.Voffset + "px";
+      this.bubble.style.left = left + "px";
+    }
     if (isOpen) this.display();
     else this.hide();
   }
 
   render() {
-    return <div />;
+    return ReactDOM.createPortal(this.props.children, this.bubble);
   }
+
+  display = () => {
+    if (document.body) {
+      document.body.appendChild(this.bubbleWrap);
+    }
+  };
+  hide = () => {
+    if (document.body && document.body.contains(this.bubbleWrap)) {
+      document.body.removeChild(this.bubbleWrap);
+    }
+  };
 }

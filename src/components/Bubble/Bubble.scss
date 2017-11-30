@@ -9,7 +9,22 @@
     position: absolute;
     background-color: white;
     z-index: 1;
-    top: 10px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.04), 0 10px 10px 0 rgba(0, 0, 0, 0.04);
+    padding: 20px;
+    font-size: 11px;
+    text-align: right;
+    &:after {
+      content: "";
+      display: block;
+      width: 0;
+      height: 0;
+      position: absolute;
+      border-left: 15px solid transparent;
+      border-bottom: 15px solid white;
+      border-right: 15px solid transparent;
+      left: calc(50% - 7);
+      top: -15px;
+    }
   }
   width: 100vw;
   height: 100vh;
